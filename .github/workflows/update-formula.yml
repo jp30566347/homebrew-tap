@@ -1,0 +1,77 @@
+name: Update Formula
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 0.1.0)"
+        required: true
+        type: string
+      tag:
+        description: "Git tag (e.g. v0.1.0)"
+        required: true
+        type: string
+
+jobs:
+  update:
+    name: Update nhl-tui formula
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download release assets and compute checksums
+        run: |
+          ASSET_BASE="https://github.com/jp30566347/nhl-tui/releases/download/${{ inputs.tag }}"
+
+          curl -sLO "${ASSET_BASE}/nhl-tui-x86_64-apple-darwin.tar.gz"
+          curl -sLO "${ASSET_BASE}/nhl-tui-aarch64-apple-darwin.tar.gz"
+
+          X86_SHA=$(sha256sum nhl-tui-x86_64-apple-darwin.tar.gz | awk '{print $1}')
+          ARM_SHA=$(sha256sum nhl-tui-aarch64-apple-darwin.tar.gz | awk '{print $1}')
+
+          echo "X86_SHA=$X86_SHA" >> "$GITHUB_ENV"
+          echo "ARM_SHA=$ARM_SHA" >> "$GITHUB_ENV"
+          echo "VERSION=${{ inputs.version }}" >> "$GITHUB_ENV"
+          echo "TAG=${{ inputs.tag }}" >> "$GITHUB_ENV"
+
+      - name: Update formula
+        run: |
+          cat > Formula/nhl-tui.rb << 'FORMULA'
+          class NhlTui < Formula
+            desc "NHL scores and stats in your terminal"
+            homepage "https://github.com/jp30566347/nhl-tui"
+            version "VERSION_PLACEHOLDER"
+            license "MIT"
+
+            on_macos do
+              if Hardware::CPU.arm?
+                url "https://github.com/jp30566347/nhl-tui/releases/download/TAG_PLACEHOLDER/nhl-tui-aarch64-apple-darwin.tar.gz"
+                sha256 "ARM_PLACEHOLDER"
+              else
+                url "https://github.com/jp30566347/nhl-tui/releases/download/TAG_PLACEHOLDER/nhl-tui-x86_64-apple-darwin.tar.gz"
+                sha256 "X86_PLACEHOLDER"
+              end
+            end
+
+            def install
+              bin.install "nhl-tui"
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/nhl-tui --version")
+            end
+          end
+          FORMULA
+
+          sed -i "s/VERSION_PLACEHOLDER/$VERSION/" Formula/nhl-tui.rb
+          sed -i "s/TAG_PLACEHOLDER/$TAG/g" Formula/nhl-tui.rb
+          sed -i "s/ARM_PLACEHOLDER/$ARM_SHA/" Formula/nhl-tui.rb
+          sed -i "s/X86_PLACEHOLDER/$X86_SHA/" Formula/nhl-tui.rb
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Formula/nhl-tui.rb
+          git commit -m "Update nhl-tui to $VERSION"
+          git push
