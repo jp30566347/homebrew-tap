@@ -1,26 +1,26 @@
 class NhlTui < Formula
   desc "NHL scores and stats in your terminal"
-  homepage "https://github.com/jp30566347/nhl-tui"
-  version "0.1.0"
+  homepage "https://jp30566347.github.io/tui/nhl-tui/"
+  version "0.1.1"
   license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/jp30566347/nhl-tui/releases/download/v0.1.0/nhl-tui-aarch64-apple-darwin.tar.gz"
-      sha256 "7909c7e8c6a91808e329097c7aaf2959ca7b7a131984e1031c04b8eedb758a8d"
+      url "https://github.com/jp30566347/tui/releases/download/nhl-tui-v0.1.1/nhl-tui-aarch64-apple-darwin.tar.gz"
+      sha256 "b2589af43dbc5e75f022cf66d3af3d7246c039f6167cbf4a6c31e7d70627d29d"
     else
-      url "https://github.com/jp30566347/nhl-tui/releases/download/v0.1.0/nhl-tui-x86_64-apple-darwin.tar.gz"
-      sha256 "fd522d62026ceab2674751b96fb1bbf1b0a84d62d458102d6e2fe1fa0e9c8000"
+      url "https://github.com/jp30566347/tui/releases/download/nhl-tui-v0.1.1/nhl-tui-x86_64-apple-darwin.tar.gz"
+      sha256 "fe2619fecee400c0def11349e9ad107d6d696a75ce5a65b62edbe2a58b49aa5e"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/jp30566347/nhl-tui/releases/download/v0.1.0/nhl-tui-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "b0028fde394125f2cc0fb0623d6ef48bd82d32bedfed6a0aebe7c906e45a168f"
+      url "https://github.com/jp30566347/tui/releases/download/nhl-tui-v0.1.1/nhl-tui-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "1b96e6e434a3210781e100ca30528da3d266554530d915e14f8c35b97e06ccd4"
     else
-      url "https://github.com/jp30566347/nhl-tui/releases/download/v0.1.0/nhl-tui-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "e6eb1cbbde6376aa8a1e26b998e752754eaef8c60e991efad8fe13eba8f354ff"
+      url "https://github.com/jp30566347/tui/releases/download/nhl-tui-v0.1.1/nhl-tui-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "8e043f7d42876a1f66b039a2301e243d04c23f70c0eb4eaf89579142bd834fb1"
     end
   end
 
